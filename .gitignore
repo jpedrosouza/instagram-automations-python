@@ -10,6 +10,7 @@ debug.log
 build/
 develop-eggs/
 dist/
+main.spec
 
 # Private vars and data
 variables.py
