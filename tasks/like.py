@@ -1,14 +1,20 @@
 import time
-import datetime
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
-def likeTask(login, password, hashtag): 
+def likeTask(login, password, optionNumber, searchObject): 
+
+    # Initialize variables
+    count = 0
+    optionLocation = False
+
+    if optionNumber == 1:
+        optionLocation = False
+    elif optionNumber == 2:
+        optionLocation = True    
 
     print('Iniciating like task...')
-
-    count = 0
 
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.get('https://www.instagram.com/')
@@ -21,16 +27,45 @@ def likeTask(login, password, hashtag):
 
     time.sleep(5)
 
-    startTime = datetime.datetime.now()
+    if optionLocation == False:
+        driver.get('https://www.instagram.com/explore/tags/' + searchObject +  '/ ')
+    else:
+        driver.find_element_by_xpath('//div[@class="LWmhU _0aCwM"]').click()
+        driver.find_element_by_css_selector('input.focus-visible').send_keys(searchObject)
+        
+        time.sleep(2)
 
-    print('Hour', startTime.hour)
+        driver.find_element_by_xpath('//div[@class="nebtz coreSpriteLocation"]').click()
 
-    x = True
+    time.sleep(7)
 
-    while True: 
-        atualTime = datetime.datetime.now()
+    content = driver.find_elements_by_css_selector('._9AhH0')
 
-        if (atualTime.hour >= startTime.hour + 1):
-            startTime = atualTime
-            print('Minute', atualTime.minute)
+    time.sleep(2)
+
+    content[9].click()
+
+    time.sleep(5)
+
+    while 1:
+        time.sleep(5)
+
+        svgs = driver.find_elements_by_class_name('_8-yf5')
+
+        if svgs[6].get_attribute("aria-label") == "Curtir":
+            time.sleep(95)
+            
+            driver.find_element_by_xpath('//span[@class="fr66n"] //button[@class="wpO6b "]').click()
+        
+            count +=1
+            print(str(count) + ' posts liked')
+
+        else:
+            print('This image has already been liked.') 
+
+        driver.find_element_by_css_selector('.coreSpriteRightPaginationArrow').click()     
+        
+
+   
+            
     

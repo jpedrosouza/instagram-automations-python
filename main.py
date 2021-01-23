@@ -1,25 +1,32 @@
+from re import search
 from tasks import like
 
-def chooseTask(optionNumber, login, password):
+def chooseTask(login, password):
 
-    if (optionNumber == 1):
-        hashtag = input('Inform a hashtag to posts like: #')
-        print('')
-        like.likeTask(login, password, hashtag)
+    # Initialize variables
+    searchObject = ''
+
+    print('What do you want?')
+    print('')
+    print('1 - Like by hashtag')
+    print('')
+    print('2 - Like by location')
+    print('')
+    numberOption = int(input('Enter the option number you want: '))
+    print('')
+    if numberOption == 1:
+        searchObject = input('Enter the hashtag you want: #')
+    elif numberOption == 2:
+        searchObject = input('Enter the location you want: ')    
+    print('')
+    like.likeTask(login, password, numberOption, searchObject)
+
         
 
-# Program initialization
-print('')
-print('How automation task you need now?')
-print('')
-print('1 - Like task')
-print('2 - All tasks')
-print('')
-taskOptionNumber = int(input('Inform a task option number: '))
 print('')
 login = input('Inform your login: ')
 print('')
 password = input('Inform your password: ')
 print('')
 
-chooseTask(taskOptionNumber, login, password)
+chooseTask(login, password)
