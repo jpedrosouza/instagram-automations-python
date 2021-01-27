@@ -4,23 +4,24 @@ import sys
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
+driver =  webdriver.Chrome(ChromeDriverManager().install())
+interactedPeople = []
 
-def likeTask(login, password, optionNumber, searchObject):
-
+# Start the task, being the centralizer of all actions to be performed by it.
+def likeTask(login, password, optionNumber, searchObject, message):
     # Initialize variables
     count = 0
     optionLocation = False
     likes = 0
-    interactedPeople = []
 
     if optionNumber == 1:
         optionLocation = False
     elif optionNumber == 2:
         optionLocation = True
 
-    print('Iniciating like task...')
+    print('Iniciating task...')
+    print('')
 
-    driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.get('https://www.instagram.com/')
 
     time.sleep(5)
@@ -32,6 +33,43 @@ def likeTask(login, password, optionNumber, searchObject):
 
     time.sleep(5)
 
+    checkAndStartAction(optionLocation, searchObject)
+
+    while 1:
+        time.sleep(25)  # 25s in production
+
+        svgs = driver.find_elements_by_class_name('_8-yf5')
+
+        try:
+            if svgs[6].get_attribute("aria-label") == "Curtir":
+                    time.sleep(75)  # 75s in production
+
+                    driver.find_element_by_xpath(
+                        '//span[@class="fr66n"] //button[@class="wpO6b "]').click()
+
+                    count += 1
+                    likes += 1
+                    print(str(count) + ' posts liked')
+
+                    if likes % 15 == 0:
+                        sendDirects(message)
+                        
+                        print('Direct sending completed, returning to the home page.')
+                        
+                        checkAndStartAction(optionLocation, searchObject)
+
+            else:
+                    print('This image has already been liked.')
+        except :
+            print('An error occurred while liking the last image.')
+            print('Reason for error (save this information for support cases) =>', sys.exc_info()[0])
+            
+        
+        driver.find_element_by_css_selector('.coreSpriteRightPaginationArrow').click()    
+
+# Check which option the user chooses (Like hashtag or location), thus 
+# forwarding to the respective page.
+def checkAndStartAction(optionLocation, searchObject):
     if optionLocation == False:
         driver.get('https://www.instagram.com/explore/tags/' +
                    searchObject + '/ ')
@@ -55,91 +93,105 @@ def likeTask(login, password, optionNumber, searchObject):
 
     time.sleep(5)
 
-    while 1:
-        time.sleep(5)  # 25s in production
+# Directs directs to users who have not yet received one and after the end of 
+# their action, it goes back to the instagram homepage.    
+def sendDirects(message):
+    print('')
+    print('Starting task of sending directs.')
+    print('')
 
-        svgs = driver.find_elements_by_class_name('_8-yf5')
+    driver.get(
+        'https://www.instagram.com/direct/inbox/?hl=pt-br')
 
-        # try:
-        if svgs[6].get_attribute("aria-label") == "Curtir":
-                time.sleep(5)  # 75s in production
+    time.sleep(10)
 
-                driver.find_element_by_xpath(
-                    '//span[@class="fr66n"] //button[@class="wpO6b "]').click()
+    div = driver.find_element_by_css_selector('.N9abW')
 
-                count += 1
-                likes += 1
-                print(str(count) + ' posts liked')
+    for x in range(3):
+        driver.execute_script(
+            'arguments[0].scrollTop = arguments[0].scrollHeight', div)
 
-                if likes == 1:
-                    print('Starting task of sending directs.')
-                    print('')
+    divs = driver.find_elements_by_xpath(
+        '//div[@class="_7UhW9   xLCgt      MMzan  KV-D4              fDxYl     "]')
 
-                    driver.get(
-                        'https://www.instagram.com/direct/inbox/?hl=pt-br')
+    for x in range(len(divs)):
+        if x % 2 == 0:
+            userName = divs[x + 1].text
+            print('User to ignore: ', userName)
+            interactedPeople.append(userName)
+                            
+    print('')        
 
-                    time.sleep(10)
+    try:
+        driver.find_element_by_xpath(
+            '//button[@class="aOOlW   HoLwm "]').click()
+    except:
+        print('')
 
-                    div = driver.find_element_by_css_selector('.N9abW')
+    driver.find_element_by_css_selector('._6q-tv').click()
 
-                    for x in range(3):
-                        driver.execute_script(
-                            'arguments[0].scrollTop = arguments[0].scrollHeight', div)
+    time.sleep(1)
 
-                    divs = driver.find_elements_by_xpath(
-                        '//div[@class="_7UhW9   xLCgt      MMzan  KV-D4              fDxYl     "]')
+    driver.find_element_by_css_selector('.-qQT3').click()
+                    
+    time.sleep(7)
+                    
+    driver.find_element_by_css_selector('.eLAPa').click()
 
-                    for x in range(len(divs)):
-                        if (x % 2) == 0:
-                            userName = divs[x + 1].text
-                            print('The username is: ', userName)
-                            interactedPeople.append(userName)
+    time.sleep(10)
 
-                    try:
-                        driver.find_element_by_xpath(
-                            '//div[@class="aOOlW   HoLwm "]').click()
-                    except:
-                        print('')
+    buttons = driver.find_elements_by_xpath(
+        '//button[@class="sqdOP yWX7d     _8A5w5    "]')
+                    
+    buttons[1].click()
 
-                    driver.find_element_by_css_selector('._6q-tv').click()
+    time.sleep(5)
 
-                    time.sleep(1)
+    likesContainer = driver.find_element_by_xpath(
+        '//div[@class="                     Igw0E     IwRSH      eGOV_        vwCYk                                                                            i0EQd                                   "] //div')
 
-                    driver.find_element_by_xpath(
-                        '//div[@class="                     Igw0E   rBNOH        eGOV_     ybXk5    _4EzTm                                                                                   XfCBB          HVWg4                  La5L3 ZUqME"]').click()
+    for x in range(6):
+        driver.execute_script(
+            'arguments[0].scrollTop = arguments[0].scrollHeight', likesContainer)
 
-                    time.sleep(5)
+    peopleLikes = driver.find_elements_by_xpath(
+        '//a[@class="FPmhX notranslate MBL3Z"]')
 
-                    driver.find_element_by_css_selector('._9AhH0').click()
-
-                    time.sleep(10)
-
-                    buttons = driver.find_elements_by_xpath(
-                        '//div[@class="sqdOP yWX7d     _8A5w5    ]')
-                    buttons[2].click()
-
-                    time.sleep(5)
-
-                    likesContainer = driver.find_element_by_xpath(
-                        '//div[@class="                     Igw0E     IwRSH      eGOV_        vwCYk                                                                            i0EQd                                   "]')
-
-                    for x in range(6):
-                        driver.execute_script(
-                            'arguments[0].scrollTop = arguments[0].scrollHeight', likesContainer)
-
-                    peopleLikes = driver.find_elements_by_xpath(
-                        '//div[@class="FPmhX notranslate MBL3Z"]')
-
-                    for x in range(len(peopleLikes)):
-                        print(peopleLikes[x].text)
-
-                        if peopleLikes[x].text in interactedPeople:
-                            interactedPeople.append(peopleLikes[x].text)
-
-        else:
-                print('This image has already been liked.')
-        # except :
-        #     print('An error occurred while liking the last image.')
-        #     print('Ocurred', sys.exc_info()[0])
-
-        driver.find_element_by_css_selector('.coreSpriteRightPaginationArrow').click()
+    for x in range(len(peopleLikes)):
+        if peopleLikes[x].text not in interactedPeople:
+            choosedUser = peopleLikes[x].text
+            print('The user chosen to send directs was: ', peopleLikes[x].text)
+                            
+            driver.find_elements_by_css_selector('.wpO6b')[12].click()
+            driver.find_elements_by_css_selector('.wpO6b')[11].click()
+                    
+            driver.find_element_by_css_selector('.xWeGp').click()
+                            
+            time.sleep(5)
+                            
+            driver.find_element_by_xpath('//button[@class="sqdOP  L3NKy   y3zKF     "]').click()
+                            
+            time.sleep(1)
+                            
+            driver.find_element_by_name('queryBox').click()
+            driver.find_element_by_name('queryBox').send_keys(choosedUser)
+                            
+            time.sleep(5)
+                            
+            driver.find_element_by_xpath('//button[@class="dCJp8 "]').click()
+            driver.find_element_by_xpath('//button[@class="sqdOP yWX7d    y3zKF   cB_4K  "]').click()
+                            
+            time.sleep(5)
+                            
+            driver.find_element_by_xpath('//textarea[@placeholder="Mensagem..."]').send_keys(message)
+            
+            time.sleep(1)
+            
+            driver.find_elements_by_xpath('//button[@class="sqdOP yWX7d    y3zKF     "]')[2].click()   
+            driver.get('https://www.instagram.com/?hl=pt-br')
+            
+            interactedPeople.append(choosedUser)
+            
+            time.sleep(5)
+            
+            return True

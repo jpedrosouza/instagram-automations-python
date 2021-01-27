@@ -12,17 +12,25 @@ def chooseTask(login, password):
     print('')
     print('2 - Like by location')
     print('')
+    
     numberOption = int(input('Enter the option number you want: '))
+    
     print('')
+    
     if numberOption == 1:
         searchObject = input('Enter the hashtag you want: #')
     elif numberOption == 2:
         searchObject = input('Enter the location you want: ')    
+        
     print('')
-    like.likeTask(login, password, numberOption, searchObject)
+    
+    message = input('Inform the message you want to send to your followers: ')
+    
+    print('')
+    
+    like.likeTask(login, password, numberOption, searchObject, message)
 
         
-
 print('')
 login = input('Inform your login: ')
 print('')
