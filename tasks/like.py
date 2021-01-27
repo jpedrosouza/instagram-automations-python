@@ -51,7 +51,7 @@ def likeTask(login, password, optionNumber, searchObject, message):
                     likes += 1
                     print(str(count) + ' posts liked')
 
-                    if likes % 15 == 0:
+                    if likes % 1 == 0: # 15 in production
                         sendDirects(message)
                         
                         print('Direct sending completed, returning to the home page.')
@@ -107,9 +107,10 @@ def sendDirects(message):
 
     div = driver.find_element_by_css_selector('.N9abW')
 
-    for x in range(3):
+    for x in range(40):
         driver.execute_script(
             'arguments[0].scrollTop = arguments[0].scrollHeight', div)
+        time.sleep(3) # 3s in production
 
     divs = driver.find_elements_by_xpath(
         '//div[@class="_7UhW9   xLCgt      MMzan  KV-D4              fDxYl     "]')
@@ -150,9 +151,10 @@ def sendDirects(message):
     likesContainer = driver.find_element_by_xpath(
         '//div[@class="                     Igw0E     IwRSH      eGOV_        vwCYk                                                                            i0EQd                                   "] //div')
 
-    for x in range(6):
+    for x in range(40):
         driver.execute_script(
             'arguments[0].scrollTop = arguments[0].scrollHeight', likesContainer)
+        time.sleep(3) # 3s in production
 
     peopleLikes = driver.find_elements_by_xpath(
         '//a[@class="FPmhX notranslate MBL3Z"]')
@@ -161,9 +163,10 @@ def sendDirects(message):
         if peopleLikes[x].text not in interactedPeople:
             choosedUser = peopleLikes[x].text
             print('The user chosen to send directs was: ', peopleLikes[x].text)
+            print('')                
                             
-            driver.find_elements_by_css_selector('.wpO6b')[12].click()
-            driver.find_elements_by_css_selector('.wpO6b')[11].click()
+            driver.find_elements_by_css_selector('.wpO6b')[8].click()
+            driver.find_elements_by_css_selector('.wpO6b')[7].click()
                     
             driver.find_element_by_css_selector('.xWeGp').click()
                             
@@ -175,6 +178,7 @@ def sendDirects(message):
                             
             driver.find_element_by_name('queryBox').click()
             driver.find_element_by_name('queryBox').send_keys(choosedUser)
+            # driver.find_element_by_name('queryBox').send_keys('__jpedrosouza')
                             
             time.sleep(5)
                             
