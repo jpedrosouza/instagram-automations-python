@@ -51,10 +51,17 @@ def likeTask(login, password, optionNumber, searchObject, message):
                     likes += 1
                     print(str(count) + ' posts liked')
 
-                    if likes % 1 == 0: # 15 in production
+                    if likes % 15 == 0: # 15 in production
                         sendDirects(message)
                         
                         print('Direct sending completed, returning to the home page.')
+                        print('')
+                        
+                        # 90 for breaks every 3 hours and 180 for breaks every 
+                        # 6 hours.
+                        if likes % 180 == 0:
+                            print('Pausing for 1 hour')
+                            time.sleep(3600)
                         
                         checkAndStartAction(optionLocation, searchObject)
 
