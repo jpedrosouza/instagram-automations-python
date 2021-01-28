@@ -59,7 +59,7 @@ def likeTask(login, password, optionNumber, searchObject, message):
                         
                         # 90 for breaks every 3 hours and 180 for breaks every 
                         # 6 hours.
-                        if likes % 180 == 0:
+                        if likes % 90 == 0:
                             print('Pausing for 1 hour')
                             time.sleep(3600)
                         
@@ -114,19 +114,29 @@ def sendDirects(message):
 
     div = driver.find_element_by_css_selector('.N9abW')
 
-    for x in range(40):
+    for x in range(50):
         driver.execute_script(
             'arguments[0].scrollTop = arguments[0].scrollHeight', div)
-        time.sleep(3) # 3s in production
+        
+        time.sleep(5) # 5s in production 
+        
+        divs = driver.find_elements_by_xpath(
+            '//div[@class="_7UhW9   xLCgt      MMzan  KV-D4              fDxYl     "]')
 
-    divs = driver.find_elements_by_xpath(
-        '//div[@class="_7UhW9   xLCgt      MMzan  KV-D4              fDxYl     "]')
+        try:
+            # with each scroll the program will catch all users it finds and will 
+            # check if they are in the list, otherwise they will be added to the 
+            # list to be ignored.
+            for x in range(len(divs)):
+                if x % 2 == 0: 
+                    userName = divs[x].text
 
-    for x in range(len(divs)):
-        if x % 2 == 0:
-            userName = divs[x + 1].text
-            print('User to ignore: ', userName)
-            interactedPeople.append(userName)
+                    if userName not in interactedPeople:
+                        print('User to ignore: ', userName)
+                        interactedPeople.append(userName)
+        except:
+            print('There was an error adding a person to the list.')                
+
                             
     print('')        
 
@@ -161,48 +171,48 @@ def sendDirects(message):
     for x in range(40):
         driver.execute_script(
             'arguments[0].scrollTop = arguments[0].scrollHeight', likesContainer)
-        time.sleep(3) # 3s in production
+        
+        time.sleep(5) # 5s in production
+        
+        peopleLikes = driver.find_elements_by_xpath(
+                '//a[@class="FPmhX notranslate MBL3Z"]')
 
-    peopleLikes = driver.find_elements_by_xpath(
-        '//a[@class="FPmhX notranslate MBL3Z"]')
+        for x in range(len(peopleLikes)):
+            if peopleLikes[x].text not in interactedPeople:
+                choosedUser = peopleLikes[x].text
+                print('The user chosen to send directs was: ', peopleLikes[x].text)
+                print('')                
 
-    for x in range(len(peopleLikes)):
-        if peopleLikes[x].text not in interactedPeople:
-            choosedUser = peopleLikes[x].text
-            print('The user chosen to send directs was: ', peopleLikes[x].text)
-            print('')                
-                            
-            driver.find_elements_by_css_selector('.wpO6b')[8].click()
-            driver.find_elements_by_css_selector('.wpO6b')[7].click()
-                    
-            driver.find_element_by_css_selector('.xWeGp').click()
-                            
-            time.sleep(5)
-                            
-            driver.find_element_by_xpath('//button[@class="sqdOP  L3NKy   y3zKF     "]').click()
-                            
-            time.sleep(1)
-                            
-            driver.find_element_by_name('queryBox').click()
-            driver.find_element_by_name('queryBox').send_keys(choosedUser)
-            # driver.find_element_by_name('queryBox').send_keys('__jpedrosouza')
-                            
-            time.sleep(5)
-                            
-            driver.find_element_by_xpath('//button[@class="dCJp8 "]').click()
-            driver.find_element_by_xpath('//button[@class="sqdOP yWX7d    y3zKF   cB_4K  "]').click()
-                            
-            time.sleep(5)
-                            
-            driver.find_element_by_xpath('//textarea[@placeholder="Mensagem..."]').send_keys(message)
-            
-            time.sleep(1)
-            
-            driver.find_elements_by_xpath('//button[@class="sqdOP yWX7d    y3zKF     "]')[2].click()   
-            driver.get('https://www.instagram.com/?hl=pt-br')
-            
-            interactedPeople.append(choosedUser)
-            
-            time.sleep(5)
-            
-            return True
+                driver.find_elements_by_css_selector('.wpO6b')[8].click()
+                driver.find_elements_by_css_selector('.wpO6b')[7].click()
+
+                driver.find_element_by_css_selector('.xWeGp').click()
+
+                time.sleep(5)
+
+                driver.find_element_by_xpath('//button[@class="sqdOP  L3NKy   y3zKF     "]').click()
+
+                time.sleep(1)
+
+                driver.find_element_by_name('queryBox').click()
+                driver.find_element_by_name('queryBox').send_keys(choosedUser)
+
+                time.sleep(5)
+
+                driver.find_element_by_xpath('//button[@class="dCJp8 "]').click()
+                driver.find_element_by_xpath('//button[@class="sqdOP yWX7d    y3zKF   cB_4K  "]').click()
+
+                time.sleep(5)
+
+                driver.find_element_by_xpath('//textarea[@placeholder="Mensagem..."]').send_keys(message)
+
+                time.sleep(1)
+
+                driver.find_elements_by_xpath('//button[@class="sqdOP yWX7d    y3zKF     "]')[2].click()   
+                driver.get('https://www.instagram.com/?hl=pt-br')
+
+                interactedPeople.append(choosedUser)
+
+                time.sleep(5)
+
+                return True
