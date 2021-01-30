@@ -4,6 +4,7 @@ import sys
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.keys import Keys
 
 driver =  webdriver.Chrome(ChromeDriverManager().install())
 interactedPeople = []
@@ -64,7 +65,7 @@ def likeTask(login, password, optionNumber, citys, message):
                         
                         # 90 for breaks every 3 hours and 180 for breaks every 
                         # 6 hours.
-                        if likes % 180 == 0:
+                        if likes % 90 == 0:
                             print('Pausing for 1 hour')
                             time.sleep(3600)
                             
@@ -230,12 +231,8 @@ def sendDirects(message):
 
                 time.sleep(5)
 
-                driver.find_element_by_xpath('//textarea[@placeholder="Mensagem..."]').send_keys(message)
+                driver.find_element_by_xpath('//textarea[@placeholder="Mensagem..."]').send_keys(message + Keys.ENTER)
 
-                time.sleep(2)
-
-                driver.find_elements_by_xpath('//button[@class="sqdOP yWX7d    y3zKF     "]')[3].click()   
-                
                 time.sleep(2)
                 
                 driver.get('https://www.instagram.com/?hl=pt-br')
