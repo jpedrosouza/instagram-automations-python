@@ -1,3 +1,4 @@
+from re import search
 import time
 import sys
 
@@ -8,11 +9,13 @@ driver =  webdriver.Chrome(ChromeDriverManager().install())
 interactedPeople = []
 
 # Start the task, being the centralizer of all actions to be performed by it.
-def likeTask(login, password, optionNumber, searchObject, message):
+def likeTask(login, password, optionNumber, citys, message):
     # Initialize variables
     count = 0
     optionLocation = False
     likes = 0
+    searchObject = ''
+    listIndex = 0
 
     if optionNumber == 1:
         optionLocation = False
@@ -32,8 +35,10 @@ def likeTask(login, password, optionNumber, searchObject, message):
     driver.find_element_by_xpath('//button[@type="submit"]').click()
 
     time.sleep(5)
-
-    checkAndStartAction(optionLocation, searchObject)
+    
+    searchObject = citys[0]
+    
+    checkAndStartAction(optionLocation, searchObject)  
 
     while 1:
         time.sleep(25)  # 25s in production
@@ -59,11 +64,30 @@ def likeTask(login, password, optionNumber, searchObject, message):
                         
                         # 90 for breaks every 3 hours and 180 for breaks every 
                         # 6 hours.
-                        if likes % 90 == 0:
+                        if likes % 180 == 0:
                             print('Pausing for 1 hour')
                             time.sleep(3600)
-                        
-                        checkAndStartAction(optionLocation, searchObject)
+                            
+                        if optionLocation == True:  
+                            
+                            if listIndex >=0 and listIndex < 4:
+                                listIndex +=1
+                            else:
+                                listIndex = 0         
+                            
+                            if listIndex == 0:
+                                searchObject = citys[0]
+                            elif listIndex == 1:
+                                searchObject = citys[1]    
+                            elif listIndex == 2:
+                                searchObject = citys[2]
+                            elif listIndex == 3:
+                                searchObject = citys[3]
+                            elif listIndex == 4:
+                                searchObject = citys[4]        
+                                
+
+                        checkAndStartAction(optionLocation, searchObject) 
 
             else:
                     print('This image has already been liked.')
@@ -106,6 +130,8 @@ def sendDirects(message):
     print('')
     print('Starting task of sending directs.')
     print('')
+    
+    interactedPeople.clear()
 
     driver.get(
         'https://www.instagram.com/direct/inbox/?hl=pt-br')
@@ -206,9 +232,12 @@ def sendDirects(message):
 
                 driver.find_element_by_xpath('//textarea[@placeholder="Mensagem..."]').send_keys(message)
 
-                time.sleep(1)
+                time.sleep(2)
 
-                driver.find_elements_by_xpath('//button[@class="sqdOP yWX7d    y3zKF     "]')[2].click()   
+                driver.find_elements_by_xpath('//button[@class="sqdOP yWX7d    y3zKF     "]')[3].click()   
+                
+                time.sleep(2)
+                
                 driver.get('https://www.instagram.com/?hl=pt-br')
 
                 interactedPeople.append(choosedUser)
