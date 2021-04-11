@@ -16,7 +16,7 @@ Have Python installed. Check out the python installation instructions [here](htt
 
 To clone this repository to your computer, simply enter the command:
 
-`$ git clone https://github.com/joaopedro9830/instagram-automations-python.git`
+`$ git clone https://github.com/jpedrosouza/instagram-automations-python.git`
 
 Ready! You are already almost ready to run the program.
 
